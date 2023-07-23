@@ -1,9 +1,9 @@
 {
   "name": "Player_Scaling",
-  "version_number": "1.9.0",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/JereKuusela/valheim-player_scaling",
   "description": "Allows admins to change the size of each player.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.1901"
+    "denikson-BepInExPack_Valheim-5.4.2105"
   ]
 }

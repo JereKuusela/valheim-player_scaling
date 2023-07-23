@@ -11,7 +11,7 @@ public class PlayerScaling : BaseUnityPlugin
 {
   const string GUID = "player_scaling";
   const string NAME = "Player Scaling";
-  const string VERSION = "1.0";
+  const string VERSION = "1.1";
   public static ServerSync.ConfigSync ConfigSync = new(GUID)
   {
     DisplayName = NAME,
@@ -28,7 +28,7 @@ public class PlayerScaling : BaseUnityPlugin
 [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
 public class PlayerScalable
 {
-  static int Hash = "Player".GetStableHashCode();
+  static readonly int Hash = "Player".GetStableHashCode();
   [HarmonyPriority(Priority.Last)]
   static void Postfix(ZNetScene __instance)
   {
@@ -44,7 +44,7 @@ public class PlayerScale
     var tr = obj.transform.Find("Visual");
     if (tr) tr.localPosition = new(0f, offset, 0f);
   }
-  static int OffsetHash = "player_offset".GetStableHashCode();
+  static readonly int OffsetHash = "player_offset".GetStableHashCode();
   [HarmonyPatch(nameof(Player.Awake)), HarmonyPostfix]
   static void LoadOffset(Player __instance)
   {

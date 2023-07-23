@@ -29,7 +29,7 @@ public class Helper
 
   public static void Command(string name, string description, Terminal.ConsoleEvent action, Terminal.ConsoleOptionsFetcher? fetcher = null)
   {
-    new Terminal.ConsoleCommand(name, description, Helper.Catch(action), optionsFetcher: fetcher);
+    new Terminal.ConsoleCommand(name, description, Catch(action), optionsFetcher: fetcher);
   }
   public static void AddError(Terminal context, string message, bool priority = true)
   {
@@ -40,26 +40,34 @@ public class Helper
     {
       try
       {
-        if (!Player.m_localPlayer) throw new InvalidOperationException("Player not found.");
         action(args);
       }
       catch (InvalidOperationException e)
       {
-        Helper.AddError(args.Context, e.Message);
+        AddError(args.Context, e.Message);
       }
     };
   public static string PrintVectorXZY(Vector3 vector) => vector.x.ToString(CultureInfo.InvariantCulture) + "," + vector.z.ToString(CultureInfo.InvariantCulture) + "," + vector.y.ToString(CultureInfo.InvariantCulture);
 
   public static ZNet.PlayerInfo FindPlayer(string name)
   {
-    var players = ZNet.instance.m_players;
-    var player = players.FirstOrDefault(player => player.m_name == name);
-    if (!player.m_characterID.IsNone()) return player;
-    player = players.FirstOrDefault(player => player.m_name.ToLower().StartsWith(name.ToLower()));
-    if (!player.m_characterID.IsNone()) return player;
-    player = players.FirstOrDefault(player => player.m_name.ToLower().Contains(name.ToLower()));
-    if (!player.m_characterID.IsNone()) return player;
-    throw new InvalidOperationException("Unable to find the player.");
+    // Some servers could have hundred players so shouldn't make the code too slow.
+    var lower = name.ToLower();
+    var matches = ZNet.instance.m_players.OrderBy(player =>
+    {
+      var pName = player.m_name.Replace(" ", "_");
+      if (pName == name || player.m_host.ToLower() == lower || player.m_characterID.UserID.ToString() == name) return 0;
+      var pLower = pName.ToLower();
+      if (pLower == lower) return 0;
+      if (pLower.StartsWith(lower)) return 1;
+      if (pLower.Contains(lower)) return 2;
+      return 3;
+    });
+    // Order by won't filter out the results, so the match must be verified.
+    var match = matches.FirstOrDefault();
+    if (match.m_name.ToLower().Contains(name.ToLower()))
+      return match;
+    throw new InvalidOperationException($"Unable to find the player {name}.");
   }
 
   public static float Float(string arg, float defaultValue = 0f)
