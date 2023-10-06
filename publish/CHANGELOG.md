@@ -1,3 +1,6 @@
+- v1.10
+  - Apparently had uploaded version 1.9 before.
+
 - v1.3
   - Fixed for the new update.
 
