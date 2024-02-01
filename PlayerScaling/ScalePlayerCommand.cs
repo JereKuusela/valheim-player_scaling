@@ -12,15 +12,14 @@ public class PlayerScaleRPC
 {
   static void Postfix()
   {
-    ZRoutedRpc.instance.Register<string, Vector3, float>("ScalePlayer", SetScale);
+    ZRoutedRpc.instance.Register<ZDOID, Vector3, float>("ScalePlayer", SetScale);
   }
-  static void SetScale(long uid, string name, Vector3 scale, float offset)
+  static void SetScale(long uid, ZDOID id, Vector3 scale, float offset)
   {
-    var info = Helper.FindPlayer(name);
     // Special case for local player to allow Cron Job set the scale instantly when the player joins.
     // At that pont, ZDOMAN is not ready yet, so we can't find the player there.
     var localId = Player.m_localPlayer ? Player.m_localPlayer.GetZDOID() : ZDOID.None;
-    if (localId == info.m_characterID && Player.m_localPlayer)
+    if (localId == id && Player.m_localPlayer)
     {
       SetScale(Player.m_localPlayer, scale);
       PlayerScale.SetOffset(Player.m_localPlayer, offset);
@@ -28,14 +27,14 @@ public class PlayerScaleRPC
     }
     else
     {
-      if (!ZDOMan.instance.m_objectsByID.TryGetValue(info.m_characterID, out var zdo)) return;
+      if (!ZDOMan.instance.m_objectsByID.TryGetValue(id, out var zdo)) return;
       if (!ZNetScene.instance.m_instances.TryGetValue(zdo, out var view)) return;
       if (!view.TryGetComponent<Player>(out var player)) return;
       SetScale(player, scale);
       PlayerScale.SetOffset(player, offset);
     }
   }
-  static void SetScale(Player player, Vector3 scale)
+  public static void SetScale(Player player, Vector3 scale)
   {
     player.m_nview.SetLocalScale(scale);
     if (player.m_visEquipment)
@@ -48,7 +47,7 @@ public class PlayerScaleRPC
       player.m_visEquipment.UpdateVisuals();
     }
   }
-  static void SaveScale(Vector3 scale, float offset)
+  public static void SaveScale(Vector3 scale, float offset)
   {
     var hash = "scale_" + WorldGenerator.instance.m_world.m_uid + "=";
     var data = Player.m_localPlayer.m_uniques;
@@ -68,15 +67,23 @@ public class ScalePlayerCommand
   }
   public ScalePlayerCommand()
   {
+    Helper.Command("scale_self", "[scale or x,y,z] [offset from ground] - Sets own scale.", (args) =>
+    {
+      if (!ZNet.instance || !Player.m_localPlayer || !Player.m_debugMode) throw new InvalidOperationException("Unauthorized to use this command.");
+      if (args.Length < 2) throw new InvalidOperationException("Missing the scale");
+      var scale = Helper.Scale(args[1].Split(','));
+      var offset = Helper.Float(args.Args, 2, 0f);
+      ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, "ScalePlayer", Player.m_localPlayer.GetZDOID(), scale, offset);
+    });
     Helper.Command("scale_player", "[player] [scale or x,y,z] [offset from ground] - Sets player scale.", (args) =>
     {
       if (!ZNet.instance || (!PlayerScaling.ConfigSync.IsAdmin && !ZNet.instance.IsServer())) throw new InvalidOperationException("Unauthorized to use this command.");
       if (args.Length < 2) throw new InvalidOperationException("Missing player name.");
       if (args.Length < 3) throw new InvalidOperationException("Missing the scale");
-      Helper.FindPlayer(args[1]);
+      var info = Helper.FindPlayer(args[1]);
       var scale = Helper.Scale(args[2].Split(','));
       var offset = Helper.Float(args.Args, 3, 0f);
-      ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, "ScalePlayer", args[1], scale, offset);
+      ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, "ScalePlayer", info.m_characterID, scale, offset);
     }, PlayerNames);
   }
 }

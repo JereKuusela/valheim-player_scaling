@@ -1,3 +1,6 @@
+- v1.11
+  - Adds a new command `scale_self` to scale self (requires debug mode instead of admin).
+
 - v1.10
   - Apparently had uploaded version 1.9 before.
 

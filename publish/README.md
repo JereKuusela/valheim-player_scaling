@@ -6,7 +6,9 @@ Install on all clients and on the server (modding [guide](https://youtu.be/L9ljm
 
 # Usage
 
-Adds a new console command `scale_player [player/character id/steam id] [scale or x,y,z] [offset from ground]`.
+Adds a new console command for admins: `scale_player [player/character id/steam id] [scale or x,y,z] [offset from ground]`.
+
+Adds a new console command with debug mode: `scale_self [scale or x,y,z] [offset from ground]`.
 
 Scaling information is saved per game world.
 

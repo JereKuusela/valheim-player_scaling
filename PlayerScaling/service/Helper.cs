@@ -52,7 +52,7 @@ public class Helper
   public static ZNet.PlayerInfo FindPlayer(string name)
   {
     // Some servers could have hundred players so shouldn't make the code too slow.
-    var lower = name.ToLower();
+    var lower = name.ToLower().Replace(" ", "_");
     var matches = ZNet.instance.m_players.OrderBy(player =>
     {
       var pName = player.m_name.Replace(" ", "_");
