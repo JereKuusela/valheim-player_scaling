@@ -71,8 +71,9 @@ public class ScalePlayerCommand
     {
       if (!ZNet.instance || !Player.m_localPlayer || !Player.m_debugMode) throw new InvalidOperationException("Unauthorized to use this command.");
       if (args.Length < 2) throw new InvalidOperationException("Missing the scale");
-      var scale = Helper.Scale(args[1].Split(','));
-      var offset = Helper.Float(args.Args, 2, 0f);
+      var split = args[1].Split(',');
+      var scale = split.Length > 2 ? Helper.Scale(split) : Helper.Float(split[0], 1f) * Vector3.one;
+      var offset = args.Args.Length > 2 ? Helper.Float(args.Args, 2) : split.Length > 2 ? Helper.Float(split, 3) : Helper.Float(split, 1);
       ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, "ScalePlayer", Player.m_localPlayer.GetZDOID(), scale, offset);
     });
     Helper.Command("scale_player", "[player] [scale or x,y,z] [offset from ground] - Sets player scale.", (args) =>
@@ -81,8 +82,9 @@ public class ScalePlayerCommand
       if (args.Length < 2) throw new InvalidOperationException("Missing player name.");
       if (args.Length < 3) throw new InvalidOperationException("Missing the scale");
       var info = Helper.FindPlayer(args[1]);
-      var scale = Helper.Scale(args[2].Split(','));
-      var offset = Helper.Float(args.Args, 3, 0f);
+      var split = args[2].Split(',');
+      var scale = split.Length > 2 ? Helper.Scale(split) : Helper.Float(split[0], 1f) * Vector3.one;
+      var offset = args.Args.Length > 3 ? Helper.Float(args.Args, 3) : split.Length > 2 ? Helper.Float(split, 3) : Helper.Float(split, 1);
       ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, "ScalePlayer", info.m_characterID, scale, offset);
     }, PlayerNames);
   }
