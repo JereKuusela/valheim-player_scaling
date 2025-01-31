@@ -1,3 +1,6 @@
+- v1.13
+  - Adds separate command for the offset.
+
 - v1.12
   - Adds alternative syntax for the command parameters (x,y,z,offset).
 
