@@ -56,7 +56,7 @@ public class Helper
     var matches = ZNet.instance.m_players.OrderBy(player =>
     {
       var pName = player.m_name.Replace(" ", "_");
-      if (pName == name || player.m_host.ToLower() == lower || player.m_characterID.UserID.ToString() == name) return 0;
+      if (pName == name || player.m_userInfo.m_id.m_userID.ToLower() == lower || player.m_characterID.UserID.ToString() == name) return 0;
       var pLower = pName.ToLower();
       if (pLower == lower) return 0;
       if (pLower.StartsWith(lower)) return 1;

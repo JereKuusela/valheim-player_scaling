@@ -11,7 +11,7 @@ public class PlayerScaling : BaseUnityPlugin
 {
   const string GUID = "player_scaling";
   const string NAME = "Player Scaling";
-  const string VERSION = "1.13";
+  const string VERSION = "1.14";
   public static ServerSync.ConfigSync ConfigSync = new(GUID)
   {
     DisplayName = NAME,

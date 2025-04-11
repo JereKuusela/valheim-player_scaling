@@ -1,3 +1,6 @@
+- v1.14
+  - Fixed for the new update.
+
 - v1.13
   - Adds separate command for the offset.
 

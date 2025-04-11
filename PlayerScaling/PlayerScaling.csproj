@@ -42,6 +42,9 @@
     <Reference Include="assembly_guiutils.dll">
       <HintPath>..\..\Libs\assembly_guiutils.dll</HintPath>
     </Reference>
+    <Reference Include="SPlatform.dll">
+      <HintPath>..\..\Libs\SPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="ServerSync.dll">
       <HintPath>..\..\Libs\ServerSync.dll</HintPath>
     </Reference>
