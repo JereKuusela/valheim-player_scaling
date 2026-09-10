@@ -5,13 +5,14 @@ using HarmonyLib;
 using Service;
 
 namespace PlayerScaling;
+
 [HarmonyPatch]
 [BepInPlugin(GUID, NAME, VERSION)]
 public class PlayerScaling : BaseUnityPlugin
 {
   const string GUID = "player_scaling";
   const string NAME = "Player Scaling";
-  const string VERSION = "1.14";
+  const string VERSION = "1.15";
   public static ServerSync.ConfigSync ConfigSync = new(GUID)
   {
     DisplayName = NAME,
